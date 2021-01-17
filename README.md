@@ -1,4 +1,6 @@
-# gamification_adaptative
+Étudiants : Emna Barred & Nabil Lamrabet.
+
+# TP IHMxIA Gamification Adaptative
 
 ## Première partie
 
@@ -8,14 +10,14 @@ Nous avons choisi de décrire les matrices suivantes :
 - Path coefs de l’élément ludique badge pour le profil Hexad :
 
 
-![alt text](images/badgepchexad.png)
+![BadgesPathCoefs.](images/badgepchexad.png)
 
 La matrice présente pour chaque catégorie Hexad (Le Socialiser, Le Free Spirit, L’Achiever, Le Philanthropist, Le Disruptor, Le Player) les coefficients de variation de la motivation intrinsèque, la motivation extrinsèque et d'amotivation selon l'élément ludiques (badge dans ce cas).
 
 
 - P val de l’élément ludique badge pour le profil Hexad :
 
-![alt text](images/badgespvalshexad.png)
+![BadgespVals.](images/badgespvalshexad.png)
 
 On utilise la technique de p value pour valider ou rejeter des coefficients. Pour ce faire, cette matrice est associée à la matrice "path coef", pour valider ou non selon la p valeur max choisie (i p<0.05, voir p<0.1 en fonction de la précision souhaitée), le coefficient existant dans les mêmes cordonnées respectives. 
 
@@ -75,7 +77,12 @@ Ces valeurs sont calculées comme suit : la somme des multiplications du score d
 Par exemple : pour l'élément ludique "progress" le calcul est réalisé comme suit :
 
 ```
-progress = student.getAchiver() * progressScoreArray[0] + student.getPlayer() * progressScoreArray[1] + student.getSocialiser() * progressScoreArray[2] + student.getFreeSpirit() * progressScoreArray[3] + student.getDisruptor() * progressScoreArray[4] + student.getPhilanthropist() * progressScoreArray[5]
+progress = student.getAchiver() * progressScoreArray[0] + 
+    student.getPlayer() * progressScoreArray[1] +
+    student.getSocialiser() * progressScoreArray[2] +
+    student.getFreeSpirit() * progressScoreArray[3] +
+    student.getDisruptor() * progressScoreArray[4] +
+    student.getPhilanthropist() * progressScoreArray[5]
 ```
 
 Dès qu'on finit de remplir le dictionnaire par tous les éléments ludiques et leurs valeurs, on le trie d'une façon décroissante. Le clé correspondant au premier élément est l'élément ludique suggéré selon le profil Hexad.
@@ -91,8 +98,11 @@ Encore une fois ce vecteur est utilisé pour générer le vecteur d’affinité 
 
 Par exemple :
 
-`badge = student.getMI() * badgeScoreArray[0] + student.getME() * badgeScoreArray[1] - student.getAmot() * badgeScoreArray[2]
-`
+```
+badge = student.getMI() * badgeScoreArray[0] + 
+student.getME() * badgeScoreArray[1] - student.getAmot() * badgeScoreArray[2]
+```
+
 En rappelant que les valeur identifiées à partir du questionnaire AMS sont utilisés comme suit:
 - student.getMI() additionne micoI, miacI et mistI pour trouver la motivation intrinsèque initial de l’étudiant
 - student.getME() additionne meidI, meinI et mereI pour trouver la motivation extrinsèque initial de l’étudiant 
@@ -115,6 +125,7 @@ On rappelle que le premier élément des vecteurs est l'élément suggéré par 
 
 ```
 hexad : {'timer', 'avatar', 'progress', 'score', 'badge', 'ranking'}
+
 motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 Les deux "modèles" sont d'accord pour dire que l'élément de jeu le plus adapté au joueur est timer.
@@ -123,6 +134,7 @@ Les deux "modèles" sont d'accord pour dire que l'élément de jeu le plus adapt
 
 ```
 hexad : {'progress', 'avatar', 'ranking', 'badge', 'score', 'timer'}
+
 motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 
@@ -138,6 +150,7 @@ Si on s'inspire de la théorie des jeux on a plutôt intérêt à suggérer 'ava
 
 ```
 hexad : {'avatar', 'progress', 'badge', 'timer', 'ranking', 'score'}
+
 motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 
@@ -149,6 +162,7 @@ compte que 'avatar' a un rang moyen meilleur que 'timer'.
 
 ```
 hexad : {'score', 'progress', 'ranking', 'badge', 'avatar', 'timer'}
+
 motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 
@@ -159,6 +173,7 @@ de ce qu'on peut trouver.
 
 ```
 hexad : {'badge', 'avatar', 'timer', 'score', 'progress', 'ranking'}
+
 motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 
@@ -176,7 +191,7 @@ Nous n'allons pas implémenter exactement une moyenne mais on peut considérer c
 Pour chaque élément d'un vecteur on lui attribue un poids, mieux l’élément est classé, plus le poids est élevé. Ainsi, dans un vecteur de 6 éléments, nous avons les poids suivants :
 
 ```
-{'élément 1': 6, 'élément 2': 5, 'élément 3': 4, 'élément 4': 3, 'élément 5': 2, 'élément 6': 1}
+{'el 1': 6, 'el 2': 5, 'el 3': 4, 'el 4': 3, 'el 5': 2, 'el 6': 1}
 ```
 
 On effectue ce traitement pour chaque vecteur. On stocke le résultat de ces traitements dans de nouveaux vecteurs qu'on additionne ensuite. Enfin on récupère le premier élément.
@@ -186,19 +201,24 @@ Voici un exemple avec le 2ème élève (elevebf14) cité précédemment :
 Ses vecteurs sont :
 ```
 hexad : {'progress', 'avatar', 'ranking', 'badge', 'score', 'timer'}
+
 motivation_initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 
 On donne une pondération aux éléments selon le classement :
 
 ```
-hexad_poids : {'progress': 6, 'avatar': 5, 'ranking': 4, 'badge': 3, 'score':2, 'timer': 1}
-motivation_initiale_poids : {'timer': 6, 'avatar': 5, 'score': 4, 'ranking': 3, 'badge': 2, 'progress'; 1}
+hexad_poids : {'progress': 6, 'avatar': 5, 'ranking': 4,
+'badge': 3, 'score':2, 'timer': 1}
+
+motivation_initiale_poids : {'timer': 6, 'avatar': 5, 
+'score': 4, 'ranking': 3, 'badge': 2, 'progress'; 1}
 ```
 On créé un nouveau vecteur en additionnant les nouveaux vecteurs (et le poids de chaque élément) :
 
 ```
-vecteur_final : {'avatar': 10, 'progress': 7, 'timer': 7, 'ranking': 4, 'score':6, 'badge': 5}
+vecteur_final : {'avatar': 10, 'progress': 7, 'timer': 7, 
+'ranking': 4, 'score':6, 'badge': 5}
 ```
 
 Le résultat obtenu correspond à ce que nous voulons : privilégier une valeur moins risquée ('avatar') mais tout de même performante (par rapport à 'progress' et 'timer' qui sont très performants dans un vecteur et très mauvais dans l'ordre, faire un choix entre les deux est risqué).
@@ -209,6 +229,7 @@ Pour le dernier cas très particulier, élève elevebg11 :
 
 ```
 hexad : {'badge', 'avatar', 'timer', 'score', 'progress', 'ranking'}
+
 motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
 ```
 
@@ -218,7 +239,8 @@ On doit prendre une décision entre 'badge', 'timer' et 'avatar'. Le plus import
 Avec notre algorithme, on obtient :
 
 ```
-vecteur_final : {'avatar': 10, 'timer': 10, 'badge': 8, 'score':7, 'ranking': 4, 'progress': 3}
+vecteur_final : {'avatar': 10, 'timer': 10, 'badge': 8, 
+'score':7, 'ranking': 4, 'progress': 3}
 ```
 
 Ensuite on peut choisir au hasard entre 'avatar' et 'timer' ion, à un certain point il faudra trier le vecteur par ordre décroissant.
@@ -226,7 +248,15 @@ Ensuite on peut choisir au hasard entre 'avatar' et 'timer' ion, à un certain p
 On pourrait très bien avoir l'ordre suivant :
 
 ```
-vecteur_final : {'timer': 10 ,'avatar': 10, 'badge': 8, 'score':7, 'ranking': 4, 'progress': 3}
+vecteur_final : {'timer': 10 ,'avatar': 10, 'badge': 8, 
+'score':7, 'ranking': 4, 'progress': 3}
 ```
 
 Si on veut être rigoureux il faudrait prendre les deux premiers et choisir au hasard nous allons nous contenter de prendre le premier élément de notre vecteur car ajouter une fonction aléatoire ne va pas améliorer les performances de l’algorithme.
+
+
+Nous avons testé les éléments ludiques que notre algorithme a suggéré contre ceux réellement utilisés. Nous avons trouvé 43 échantillons adaptés et 215 échantillons non adaptés. Ceci peut être expliqué par le faite que nous nous trouvons des fois des éléments ludique de même poids et que notre algorithme se trouve dans l'obligation de donner un élément au hasard. Ainsi que, le vecteur d'affinité de motivation à toujours tendance à proposer 'timer' en premier ce qui fait que notre algorithme propose la plupart du temps 'timer' quand celui-ci se présente dans les top 3 de suggestions d'Hexad.
+
+Enfin, et peut-être l'explication la plus importante vient dans le choix de notre algorithme. Peut-être qu'un compromis entre les deux modèles n'était absolument pas la bonne décision à prendre. Il aurait dans ce cas fallut choisir entre le meilleur élément de chaque vecteur.
+
+Nous n'avons pas eu le temps de faire une analyste statistique plus poussée de nos résultats.
