@@ -42,6 +42,17 @@ class Student:
     def getId(self):
         return str(self.id)
 
+    def getMI(self):
+        mi= float(self.data["micoI"][self.index]) + float(self.data[" miacI"][self.index]) + float(self.data[" mistI"][self.index])
+        return mi
+
+    def getME(self):
+        me = float(self.data[" meidI"][self.index]) + float(self.data[" meinI"][self.index]) + float(self.data[" mereI"][self.index])
+        return me
+
+    def getAmot(self):
+        return float(self.data[" amotI"][self.index])
+
     def getAchiver(self):
         return float(self.data["achiever"][self.index])
 
@@ -131,20 +142,28 @@ def pathCoefsValidation(pCoefs, pValues, validateValue, factor):
     elif(factor == "Motvation"):
         if(pValues["MI"][0] >= validateValue):
             pathCoefs["MI"][0] = 0
+
         if (pValues["MI"][1] >= validateValue):
             pathCoefs["MI"][1] = 0
+
         if (pValues["MI"][2] >= validateValue):
             pathCoefs["MI"][2] = 0
+
         if (pValues["ME"][0] >= validateValue):
             pathCoefs["ME"][0] = 0
+
         if (pValues["ME"][1] >= validateValue):
             pathCoefs["ME"][1] = 0
+
         if (pValues["ME"][2] >= validateValue):
             pathCoefs["ME"][2] = 0
+
         if (pValues["amotI"][0] >= validateValue):
             pathCoefs["amotI"][0] = 0
+
         if (pValues["amotI"][1] >= validateValue):
             pathCoefs["amotI"][1] = 0
+
         if (pValues["amotI"][2] >= validateValue):
             pathCoefs["amotI"][2] = 0
     return pathCoefs
@@ -201,17 +220,17 @@ def generateAffinityArray(factor, student, scoreScoreArray, avatarScoreArray, ba
                        student.getDisruptor() * progressScoreArray[4] + student.getPhilanthropist() * progressScoreArray[5]
 
     elif(factor == "Motivation"):
-        r["badge"] = student.getAchiver() * badgeScoreArray
+        r["badge"] = student.getMI() * badgeScoreArray + student.getME() * badgeScoreArray - student.getAmot() * badgeScoreArray
 
-        r["score"] = student.getAchiver() * scoreScoreArray
+        r["score"] = student.getMI() * scoreScoreArray + student.getME() * scoreScoreArray - student.getAmot() * scoreScoreArray
 
-        r["avatar"] = student.getAchiver() * avatarScoreArray
+        r["avatar"] = student.getMI() * avatarScoreArray + student.getME() * avatarScoreArray - student.getAmot() * avatarScoreArray
 
-        r["timer"] = student.getAchiver() * timerScoreArray
+        r["timer"] = student.getMI() * timerScoreArray + student.getME() * timerScoreArray - student.getAmot() * timerScoreArray
 
-        r["ranking"] = student.getAchiver() * rankingScoreArray
+        r["ranking"] = student.getMI() * rankingScoreArray + student.getME() * rankingScoreArray - student.getAmot() * rankingScoreArray
 
-        r["progress"] = student.getAchiver() * progressScoreArray
+        r["progress"] = student.getMI() * progressScoreArray + student.getME() * progressScoreArray - student.getAmot() * progressScoreArray
 
     sortedDict = dict(sorted(r.items(), key=operator.itemgetter(1),reverse=True))
 
