@@ -31,6 +31,7 @@ scorePVmotiv = pd.read_csv("data/PLS/Motivation/scorepVals.csv", sep=";")
 
 usersData = pd.read_csv("data/userStats.csv", sep=";")
 studentsIdsList = usersData["User"]
+pmax = 0.05
 
 class Student:
 
@@ -258,25 +259,27 @@ def suggestGameElements(affinityArray, studentid, factor):
 student = getRandomStudent()
 id = student.getId()
 students = []
-
-
+algoSuggestions = {}
+gamelementCSV = {}
+goodsamples = {}
+badsamples = {}
 
 
 #pathCoefs du profil hexad pour chaque element jeu après validation
-pcoefBadges = pathCoefsValidation(badgesPCHexad, badgesPVHexad, 0.05, "Hexad")
-pcoefAvatar = pathCoefsValidation(avatarPCHexad, avatarPVHexad, 0.05, "Hexad")
-pcoefTimer = pathCoefsValidation(timerPCHexad, timerPVHexad, 0.05, "Hexad")
-pcoefProgress = pathCoefsValidation(progressPCHexad, progressPVHexad, 0.05, "Hexad")
-pcoefRanking = pathCoefsValidation(rankingPCHexad, rankingPVHexad, 0.05, "Hexad")
-pcoefScore = pathCoefsValidation(scorePCHexad, scorePVHexad, 0.05, "Hexad")
+pcoefBadges = pathCoefsValidation(badgesPCHexad, badgesPVHexad, pmax, "Hexad")
+pcoefAvatar = pathCoefsValidation(avatarPCHexad, avatarPVHexad, pmax, "Hexad")
+pcoefTimer = pathCoefsValidation(timerPCHexad, timerPVHexad, pmax, "Hexad")
+pcoefProgress = pathCoefsValidation(progressPCHexad, progressPVHexad, pmax, "Hexad")
+pcoefRanking = pathCoefsValidation(rankingPCHexad, rankingPVHexad, pmax, "Hexad")
+pcoefScore = pathCoefsValidation(scorePCHexad, scorePVHexad, pmax, "Hexad")
 
 #pathCoefs de la motivation pour chaque element jeu après validation
-pcoefBadgesmotiv = pathCoefsValidation(badgesPCmotiv, badgesPVmotiv, 0.05, "Motivation")
-pcoefAvatarmotiv = pathCoefsValidation(avatarPCmotiv, avatarPVmotiv, 0.05, "Motivation")
-pcoefTimermotiv = pathCoefsValidation(timerPCmotiv, timerPVmotiv, 0.05, "Motivation")
-pcoefProgressmotiv = pathCoefsValidation(progressPCmotiv, progressPVmotiv, 0.05, "Motivation")
-pcoefRankingmotiv = pathCoefsValidation(rankingPCmotiv, rankingPVmotiv, 0.05, "Motivation")
-pcoefScoremotiv = pathCoefsValidation(scorePCmotiv, scorePVmotiv, 0.05, "Motivation")
+pcoefBadgesmotiv = pathCoefsValidation(badgesPCmotiv, badgesPVmotiv, pmax, "Motivation")
+pcoefAvatarmotiv = pathCoefsValidation(avatarPCmotiv, avatarPVmotiv, pmax, "Motivation")
+pcoefTimermotiv = pathCoefsValidation(timerPCmotiv, timerPVmotiv, pmax, "Motivation")
+pcoefProgressmotiv = pathCoefsValidation(progressPCmotiv, progressPVmotiv, pmax, "Motivation")
+pcoefRankingmotiv = pathCoefsValidation(rankingPCmotiv, rankingPVmotiv, pmax, "Motivation")
+pcoefScoremotiv = pathCoefsValidation(scorePCmotiv, scorePVmotiv, pmax, "Motivation")
 
 #vecteur de score pour chaque element jeu selon hexad
 scoreScoreArray = gameElementScoreArray(pcoefScore, "Hexad")
@@ -345,29 +348,21 @@ for s in students:
     print(finalVect)
     print("Notre algorithme propose l'élèment ludique :" + bestGE)
     print('=================================================================================================================================')
+    #élément ludique sugéré pour chaque étudiant
+    algoSuggestions[s.getId()] = bestGE
+    #élément ludique dans le csv
+    gamelementCSV[s.getId()] = s.getGameElement()
+
+for skey in list(gamelementCSV.keys()):
+
+    if algoSuggestions[skey] == gamelementCSV[skey]:
+        goodsamples[skey]= algoSuggestions[skey]
+    else:
+        badsamples[skey] = algoSuggestions[skey]
+print("Echantillons adaptés :", len(goodsamples))
+print("Echantillons non adaptés :", len(badsamples))
 
 
-"""
-#vecteur d'affinité selon hexad
-vectHexad = generateAffinityArray("Hexad", student, scoreScoreArray, avatarScoreArray, badgeScoreArray, progressScoreArray, rankingScoreArray, timerScoreArray)
-print('=================================================================================================================================')
-print("vecteur d'affinité selon Hexad: \n")
-print(vectHexad)
-print('=================================================================================================================================')
-
-#vecteur d'affinité selon motivation
-vectMotiv = generateAffinityArray("Motivation", student, scoreScoreMotiv, avatarScoreMotiv, badgeScoreMotiv, progressScoreMotiv, rankingScoreMotiv, timerScoreMotiv)
-print('=================================================================================================================================')
-print("vecteur d'affinité selon Movtivation: \n")
-print(vectMotiv)
-print('=================================================================================================================================')
-
-student.printStatistics()
-print('=================================================================================================================================')
-suggestGameElements(vectHexad, id, "son profil Hexad")
-print('=================================================================================================================================')
-suggestGameElements(vectMotiv, id, "sa motivation")
-"""
 
 
 
