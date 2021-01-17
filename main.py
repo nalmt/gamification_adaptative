@@ -257,6 +257,10 @@ def suggestGameElements(affinityArray, studentid, factor):
 
 student = getRandomStudent()
 id = student.getId()
+students = []
+
+
+
 
 #pathCoefs du profil hexad pour chaque element jeu après validation
 pcoefBadges = pathCoefsValidation(badgesPCHexad, badgesPVHexad, 0.05, "Hexad")
@@ -290,6 +294,37 @@ progressScoreMotiv = gameElementScoreArray(pcoefProgressmotiv, "Motivation")
 rankingScoreMotiv = gameElementScoreArray(pcoefRankingmotiv, "Motivation")
 timerScoreMotiv = gameElementScoreArray(pcoefTimermotiv, "Motivation")
 
+#list of all students
+for sid in studentsIdsList:
+    Id = sid
+    StudentData = usersData.loc[usersData['User'] == Id]
+    index = StudentData.index.values.astype(int)[0]
+    s = Student(Id, StudentData, index)
+    students.append(s)
+
+#vecteurs d'affinité de chaque étudiant:
+for s in students:
+    # vecteur d'affinité selon hexad
+    vectHexad = generateAffinityArray("Hexad", s, scoreScoreArray, avatarScoreArray, badgeScoreArray,
+                                      progressScoreArray, rankingScoreArray, timerScoreArray)
+    print(
+        '=================================================================================================================================')
+    print("vecteur d'affinité selon Hexad pour étudiant" + s.getId() + ": \n" )
+    print(vectHexad)
+    print(
+        '=================================================================================================================================')
+
+    # vecteur d'affinité selon motivation
+    vectMotiv = generateAffinityArray("Motivation", s, scoreScoreMotiv, avatarScoreMotiv, badgeScoreMotiv,
+                                      progressScoreMotiv, rankingScoreMotiv, timerScoreMotiv)
+    print(
+        '=================================================================================================================================')
+    print("vecteur d'affinité selon Movtivation pour étudiant" + s.getId() + ": \n")
+    print(vectMotiv)
+    print(
+        '=================================================================================================================================')
+
+"""
 #vecteur d'affinité selon hexad
 vectHexad = generateAffinityArray("Hexad", student, scoreScoreArray, avatarScoreArray, badgeScoreArray, progressScoreArray, rankingScoreArray, timerScoreArray)
 print('=================================================================================================================================')
@@ -306,25 +341,11 @@ print('=========================================================================
 
 student.printStatistics()
 print('=================================================================================================================================')
-suggestGameElements(vectHexad, id,"son profil Hexad")
+suggestGameElements(vectHexad, id, "son profil Hexad")
 print('=================================================================================================================================')
 suggestGameElements(vectMotiv, id, "sa motivation")
-
-
-
 """
-if student.getGameElement() == "avatar":
-    print(pathCoefsValidation(avatarPCHexad, avatarPVHexad, 0.05))
-if student.getGameElement() == "timer":
-    print(pathCoefsValidation(timerPCHexad, timerPVHexad, 0.05))
-if student.getGameElement() == "progress":
-    print(pathCoefsValidation(progressPCHexad, progressPVHexad, 0.05))
-if student.getGameElement() == "ranking":
-    print(pathCoefsValidation(rankingPCHexad, rankingPVHexad, 0.05))
-if student.getGameElement() == "score":
-    print(pathCoefsValidation(scorePCHexad, scorePVHexad, 0.05))
-if student.getGameElement() == "badges":
-    print(pathCoefsValidation(badgesPCHexad, badgesPVHexad, 0.05))
-"""
+
+
 
 
