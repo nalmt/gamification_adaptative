@@ -57,21 +57,47 @@ Nous avons implémenté la méthode `gameElementScoreArray()` que nous utilisons
 ### Vecteur de score et vecteur d'affinité pour profil Hexad 
 
 Le vecteur du score du profil hexad pour un Game Element spécifique, contient des valeurs de score pour chaque catégorie du profil hexad. 
-Pour trouver ces valeurs, on additionne les motivations intrinsèque et extrinsèque correspondantes à cette catégorie récupéré du tableau pathcoefs validé (avec la méthode `pathCoefsValidation()`) de cet élément ludique et on en soustrait l’amotivation correspondante dans ce dernier. 
+Pour trouver ces valeurs, on additionne les motivations intrinsèque et extrinsèque correspondantes à cette catégorie récupéréé du tableau pathcoefs validé (avec la méthode `pathCoefsValidation()`) de cet élément ludique et on en soustrait l’amotivation correspondante dans ce dernier. 
 Par exemple: le score de la catégorie Achiever pour l'élément jeu “avatar” se calcule comme suit :
 
-`score = pathCoefs\["achiever"]\[0] + pathCoefs\["achiever"]\[1] - pathCoefs\["achiever"]\[2]`
+`score = pathCoefs["achiever"][0] + pathCoefs["achiever"][1] - pathCoefs["achiever"][2]`
 
 avec:
 - pathCoefs\["achiever"][0] correspond à la valeur de la motivation intrinsèque dans tableau avatarpathcoef pour “achiever”
 - pathCoefs\["achiever"][1] correspond à la valeur de la motivation extrinsèque dans tableau avatarpathcoef pour “achiever”
 - pathCoefs\["achiever"][2] correspond à la valeur de l’amotivation dans tableau avatarpathcoef pour “achiever”
 
-Une fois ce vecteur est calculé, il est utilisé pour generer le vecteur d'affinité 
-### Vecteur de score et vecteur d'affinité pour profil motivation 
+Une fois ce vecteur est calculé, il est utilisé pour générer le vecteur d'affinité pour le profil Hexad. 
+Pour ce faire, nous utilisons `generateAffinityArray()`, grâce à cette méthode, nous remplissons les clés d’un dictionnaire par les noms des élèments ludiques et leurs valeurs correspondantes. 
+Ces valeurs sont calculées comme suit : la somme des multiplications du score de chaque catégorie du profil hexad dans le vecteur des scores par sa valeur trouvé dans le csv pour l’élève en question (identifié à partir d’un questionnaire). 
 
-here
+Par exemple : pour l'élément ludique "progress" le calcul est réalisé comme suit:
 
+`progress = student.getAchiver() * progressScoreArray[0] + student.getPlayer() * progressScoreArray[1] + student.getSocialiser() * progressScoreArray[2] + student.getFreeSpirit() * progressScoreArray[3] + student.getDisruptor() * progressScoreArray[4] + student.getPhilanthropist() * progressScoreArray[5] `
+
+Dès qu'on finit de remplir le dictionnaire par tous les éléments ludiques et leurs valeurs, on le trie d'une façon décroissante. Le clé correspondant au premier élément est l'élément ludique suggéré selon le profil Hexad.
+
+
+### Vecteur de score et vecteur d'affinité pour profil Hexad 
+Le vecteur des scores pour le profil motivation est calculé de la même façon que le profil hexad. 
+La seule exception c’est qu’on cherche les scores pour les motivations intrinsèque, extrinsèque et l’amotivation.
+
+`MI = pathCoefs["MI"][0] + pathCoefs["MI"][1] + pathCoefs["MI"][2] `
+
+Encore une fois ce vecteur est utilisé pour générer le vecteur d’affinité mais cette fois-ci les valeurs sont calculés en suivant la régle : MI + ME - Amot
+Par exemple:
+
+`badge = student.getMI() * badgeScoreArray[0] + student.getME() * badgeScoreArray[1] - student.getAmot() * badgeScoreArray[2]
+`
+En rappelant que les valeur identifiées à partir du questionnaire AMS sont utilisés comme suit:
+- student.getMI() additionne micoI, miacI et mistI pour trouver la motivation intrinsèque initial de l’étudiant
+- student.getME() additionne meidI, meinI et mereI pour trouver la motivation extrinsèque initial de l’étudiant 
+- student.getAmot() retourne l’amotivation initiale amotI
+
+
+De la même façon, nous remplissons un dictionnaire qu’on trie par la suite pour trouver le Game Element suggéré par le profil motivation.
+
+![alt text] (images/etape3.png)
 ## Deuxième partie
 
 ### Étape 1 : exemples de cas à considérer

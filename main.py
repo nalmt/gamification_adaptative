@@ -75,7 +75,7 @@ class Student:
         return str(self.data["GameElement"][self.index])
 
     def printStatistics(self):
-        print("Les statistiques pour l'élève " + self.getId() + " :" +
+        print("Les statistiques :" +
               "\n Achiver : " + str(self.getAchiver()) +
               "\n Player : " + str(self.getPlayer()) +
               "\n Socialiser : " + str(self.getSocialiser())+
@@ -309,15 +309,17 @@ for s in students:
                                       progressScoreArray, rankingScoreArray, timerScoreArray)
     print('=================================================================================================================================')
     print("Pour l'élève " + s.getId() + ": \n")
-    print("Le vecteur d'affinité selon Hexad est: \n" )
+    s.printStatistics()
+    print("\n")
+    print("Le vecteur d'affinité selon Hexad est: " )
     print(vectHexad)
     print("Selon le profil Hexad, l'élèment ludique sugéré est :" + list(vectHexad.keys())[0] + "\n")
     # vecteur d'affinité selon motivation
     vectMotiv = generateAffinityArray("Motivation", s, scoreScoreMotiv, avatarScoreMotiv, badgeScoreMotiv,
                                       progressScoreMotiv, rankingScoreMotiv, timerScoreMotiv)
-    print("Le vecteur d'affinité selon la movtivation est : \n")
+    print("Le vecteur d'affinité selon la movtivation est : ")
     print(vectMotiv)
-    print("Selon la motivation initiale, l'élèment ludique sugéré est :" + list(vectMotiv.keys())[0] + "\n")
+    print("Selon la motivation, l'élèment ludique sugéré est :" + list(vectMotiv.keys())[0] + "\n")
     # algo de compromis
     vectHexadWeights = {}
     vectMotivPWeights = {}
@@ -325,13 +327,11 @@ for s in students:
     for ge in vectHexad.keys():
         vectHexadWeights[ge] = n
         n = n - 1
-    print(vectHexadWeights)
 
     n = 6
     for ge in vectMotiv.keys():
         vectMotivPWeights[ge] = n
         n = n - 1
-    print(vectMotivPWeights)
 
     finalVect = {}
     bestGE = ""
@@ -341,7 +341,7 @@ for s in students:
     finalVect = dict(sorted(finalVect.items(), key=operator.itemgetter(1), reverse=True))
 
     bestGE = list(finalVect.keys())[0]
-    print("Le vecteur pondéré généré par notre algorithme selon hexad et motivation est : \n")
+    print("Le vecteur pondéré généré par notre algorithme selon hexad et motivation est : ")
     print(finalVect)
     print("Notre algorithme propose l'élèment ludique :" + bestGE)
     print('=================================================================================================================================')
