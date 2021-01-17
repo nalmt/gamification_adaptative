@@ -71,14 +71,22 @@ class Student:
     def getPhilanthropist(self):
         return float(self.data["philanthropist"][self.index])
 
-    def printStatistics(self):
-        print("Les statistiques pour l'élève " + self.getId() + " :\n Achiver : " + str(self.getAchiver()) +
-              "\n Player : " + str(self.getPlayer()) + "\n Player : " + str(self.getPlayer()) +
-              "\n Socialiser : " + str(self.getSocialiser()) + "\n FreeSpirit : " + str(self.getFreeSpirit()) +
-              "\n Disrupter : ", str(self.getDisruptor()), "\n Philanthropist : " + str(self.getPhilanthropist()))
-
     def getGameElement(self):
         return str(self.data["GameElement"][self.index])
+
+    def printStatistics(self):
+        print("Les statistiques pour l'élève " + self.getId() + " :" +
+              "\n Achiver : " + str(self.getAchiver()) +
+              "\n Player : " + str(self.getPlayer()) +
+              "\n Socialiser : " + str(self.getSocialiser())+
+              "\n FreeSpirit : " + str(self.getFreeSpirit()) +
+              "\n Disrupter : " + str(self.getDisruptor()) +
+              "\n Philanthropist : " + str(self.getPhilanthropist()) +
+              "\n Motivation intrinsèque initale : " + str(self.getMI()) +
+              "\n Motivation extrinsèque initale : " + str(self.getME()) +
+              "\n Amotivation initale : " + str(self.getAmot()))
+
+
 
 def pathCoefsValidation(pCoefs, pValues, validateValue, factor):
     pathCoefs = pCoefs.copy()
@@ -175,22 +183,25 @@ def getRandomStudent():
     s = Student(randomStudentId, randomStudentData, index)
     return s
 
-def gameElementScoreArray(pathCoefs):
-    geArray = np.zeros(6)
-    geArray[0] = pathCoefs["achiever"][0] + pathCoefs["achiever"][1] - pathCoefs["achiever"][2]
-    geArray[1] = pathCoefs["player"][0] + pathCoefs["player"][1] - pathCoefs["player"][2]
-    geArray[2] = pathCoefs["socialiser"][0] + pathCoefs["socialiser"][1] - pathCoefs["socialiser"][2]
-    geArray[3] = pathCoefs["freeSpirit"][0] + pathCoefs["freeSpirit"][1] - pathCoefs["freeSpirit"][2]
-    geArray[4] = pathCoefs["disruptor"][0] + pathCoefs["disruptor"][1] - pathCoefs["disruptor"][2]
-    geArray[5] = pathCoefs["philanthropist"][0] + pathCoefs["philanthropist"][1] - pathCoefs["philanthropist"][2]
-    return geArray
+def gameElementScoreArray(pathCoefs, factor):
+    if factor == "Hexad":
+        geArray = np.zeros(6)
+        geArray[0] = pathCoefs["achiever"][0] + pathCoefs["achiever"][1] - pathCoefs["achiever"][2]
+        geArray[1] = pathCoefs["player"][0] + pathCoefs["player"][1] - pathCoefs["player"][2]
+        geArray[2] = pathCoefs["socialiser"][0] + pathCoefs["socialiser"][1] - pathCoefs["socialiser"][2]
+        geArray[3] = pathCoefs["freeSpirit"][0] + pathCoefs["freeSpirit"][1] - pathCoefs["freeSpirit"][2]
+        geArray[4] = pathCoefs["disruptor"][0] + pathCoefs["disruptor"][1] - pathCoefs["disruptor"][2]
+        geArray[5] = pathCoefs["philanthropist"][0] + pathCoefs["philanthropist"][1] - pathCoefs["philanthropist"][2]
+        return geArray
+    elif factor == "Motivation":
+        geArray = np.zeros(3)
+        geArray[0] = pathCoefs["MI"][0] + pathCoefs["MI"][1] + pathCoefs["MI"][2]
+        geArray[1] = pathCoefs["ME"][0] + pathCoefs["ME"][1] + pathCoefs["ME"][2]
+        geArray[2] = pathCoefs["amotI"][0] + pathCoefs["amotI"][1] + pathCoefs["amotI"][2]
+        return geArray
 
-def gameElementMotivationScore(pathcoefs):
-    mi = pathcoefs["MI"][0] + pathcoefs["MI"][1] + pathcoefs["MI"][2]
-    me = pathcoefs["ME"][0] + pathcoefs["ME"][1] + pathcoefs["ME"][2]
-    amot = pathcoefs["amotI"][0] + pathcoefs["amotI"][1] + pathcoefs["amotI"][2]
-    score = mi + me + amot
-    return score
+
+
 
 def generateAffinityArray(factor, student, scoreScoreArray, avatarScoreArray, badgeScoreArray, progressScoreArray, rankingScoreArray, timerScoreArray):
     r = {}
@@ -220,17 +231,17 @@ def generateAffinityArray(factor, student, scoreScoreArray, avatarScoreArray, ba
                        student.getDisruptor() * progressScoreArray[4] + student.getPhilanthropist() * progressScoreArray[5]
 
     elif(factor == "Motivation"):
-        r["badge"] = student.getMI() * badgeScoreArray + student.getME() * badgeScoreArray - student.getAmot() * badgeScoreArray
+        r["badge"] = student.getMI() * badgeScoreArray[0] + student.getME() * badgeScoreArray[1] - student.getAmot() * badgeScoreArray[2]
 
-        r["score"] = student.getMI() * scoreScoreArray + student.getME() * scoreScoreArray - student.getAmot() * scoreScoreArray
+        r["score"] = student.getMI() * scoreScoreArray[0] + student.getME() * scoreScoreArray[1] - student.getAmot() * scoreScoreArray[2]
 
-        r["avatar"] = student.getMI() * avatarScoreArray + student.getME() * avatarScoreArray - student.getAmot() * avatarScoreArray
+        r["avatar"] = student.getMI() * avatarScoreArray[0] + student.getME() * avatarScoreArray[1] - student.getAmot() * avatarScoreArray[2]
 
-        r["timer"] = student.getMI() * timerScoreArray + student.getME() * timerScoreArray - student.getAmot() * timerScoreArray
+        r["timer"] = student.getMI() * timerScoreArray[0] + student.getME() * timerScoreArray[1] - student.getAmot() * timerScoreArray[2]
 
-        r["ranking"] = student.getMI() * rankingScoreArray + student.getME() * rankingScoreArray - student.getAmot() * rankingScoreArray
+        r["ranking"] = student.getMI() * rankingScoreArray[0] + student.getME() * rankingScoreArray[1] - student.getAmot() * rankingScoreArray[2]
 
-        r["progress"] = student.getMI() * progressScoreArray + student.getME() * progressScoreArray - student.getAmot() * progressScoreArray
+        r["progress"] = student.getMI() * progressScoreArray[0] + student.getME() * progressScoreArray[1] - student.getAmot() * progressScoreArray[2]
 
     sortedDict = dict(sorted(r.items(), key=operator.itemgetter(1),reverse=True))
 
@@ -264,27 +275,37 @@ pcoefRankingmotiv = pathCoefsValidation(rankingPCmotiv, rankingPVmotiv, 0.05, "M
 pcoefScoremotiv = pathCoefsValidation(scorePCmotiv, scorePVmotiv, 0.05, "Motivation")
 
 #vecteur de score pour chaque element jeu selon hexad
-scoreScoreArray = gameElementScoreArray(pcoefScore)
-avatarScoreArray = gameElementScoreArray(pcoefAvatar)
-badgeScoreArray = gameElementScoreArray(pcoefBadges)
-progressScoreArray = gameElementScoreArray(pcoefProgress)
-rankingScoreArray = gameElementScoreArray(pcoefRanking)
-timerScoreArray = gameElementScoreArray(pcoefTimer)
+scoreScoreArray = gameElementScoreArray(pcoefScore, "Hexad")
+avatarScoreArray = gameElementScoreArray(pcoefAvatar, "Hexad")
+badgeScoreArray = gameElementScoreArray(pcoefBadges, "Hexad")
+progressScoreArray = gameElementScoreArray(pcoefProgress, "Hexad")
+rankingScoreArray = gameElementScoreArray(pcoefRanking, "Hexad")
+timerScoreArray = gameElementScoreArray(pcoefTimer, "Hexad")
 
 #score motivation pour chaque element jeu
-scoreScoreMotiv = gameElementMotivationScore(pcoefScoremotiv)
-avatarScoreMotiv= gameElementMotivationScore(pcoefAvatarmotiv)
-badgeScoreMotiv = gameElementMotivationScore(pcoefBadgesmotiv)
-progressScoreMotiv = gameElementMotivationScore(pcoefProgressmotiv)
-rankingScoreMotiv = gameElementMotivationScore(pcoefRankingmotiv)
-timerScoreMotiv = gameElementMotivationScore(pcoefTimermotiv)
+scoreScoreMotiv = gameElementScoreArray(pcoefScoremotiv, "Motivation")
+avatarScoreMotiv= gameElementScoreArray(pcoefAvatarmotiv, "Motivation")
+badgeScoreMotiv = gameElementScoreArray(pcoefBadgesmotiv, "Motivation")
+progressScoreMotiv = gameElementScoreArray(pcoefProgressmotiv, "Motivation")
+rankingScoreMotiv = gameElementScoreArray(pcoefRankingmotiv, "Motivation")
+timerScoreMotiv = gameElementScoreArray(pcoefTimermotiv, "Motivation")
 
 #vecteur d'affinité selon hexad
 vectHexad = generateAffinityArray("Hexad", student, scoreScoreArray, avatarScoreArray, badgeScoreArray, progressScoreArray, rankingScoreArray, timerScoreArray)
+print('=================================================================================================================================')
+print("vecteur d'affinité selon Hexad: \n")
+print(vectHexad)
+print('=================================================================================================================================')
 
 #vecteur d'affinité selon motivation
 vectMotiv = generateAffinityArray("Motivation", student, scoreScoreMotiv, avatarScoreMotiv, badgeScoreMotiv, progressScoreMotiv, rankingScoreMotiv, timerScoreMotiv)
+print('=================================================================================================================================')
+print("vecteur d'affinité selon Movtivation: \n")
+print(vectMotiv)
+print('=================================================================================================================================')
 
+student.printStatistics()
+print('=================================================================================================================================')
 suggestGameElements(vectHexad, id,"son profil Hexad")
 print('=================================================================================================================================')
 suggestGameElements(vectMotiv, id, "sa motivation")
