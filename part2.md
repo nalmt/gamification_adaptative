@@ -1,0 +1,125 @@
+# Étape 1 : exemples de cas à considérer
+
+Nous avons généré tous les vecteurs hexad et motivation initiale des élèves dans le fichier vecteurs.txt à la racine du projet. Nous avons ensuite sélectionné quelques cas intéressants. 
+
+On rappelle que le premier élément des vecteurs est l'élément suggéré par le "modèle".
+
+élève elevelg06 : 
+
+```
+hexad : {'timer', 'avatar', 'progress', 'score', 'badge', 'ranking'}
+motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+Les deux "modèles" sont d'accord pour dire que l'élément de jeu le plus adapté au joueur est timer.
+
+élève elevebf14 : 
+
+```
+hexad : {'progress', 'avatar', 'ranking', 'badge', 'score', 'timer'}
+motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+
+Les deux "modèles" suggèrent des éléments différents (hexad : progress, motivation initiale : timer).
+
+Pour hexad, 'timer' est le pire élément à suggérer, pour motivation initiale, 'progress' est le pire élément à suggérer.
+
+En revanche les deux modèles suggèrent que l'élément 'avatar' n'est pas le meilleur, mais le deuxième meilleur.
+
+Si on s'inspire de la théorie des jeux on a plutôt intérêt à suggérer 'avatar' dans ce genre de cas.
+
+élève elevebf08 : 
+
+```
+hexad : {'avatar', 'progress', 'badge', 'timer', 'ranking', 'score'}
+motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+
+Dans ce cas là, visuellement on aurait tendance à suggérer 'avatar'.
+Nous verrons par la suite l'algorithme choisi mais si on fait une moyenne des rangs on se rend
+compte que 'avatar' a un rang moyen meilleur que 'timer'.
+
+élève elevebg05 : 
+
+```
+hexad : {'score', 'progress', 'ranking', 'badge', 'avatar', 'timer'}
+motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+
+Il s'agit d'un autre cas similaire que le précédent qui est souvent présent dans le jeu de donnée et donc représentatif
+de ce qu'on peut trouver.
+
+élève elevebg11 : 
+
+```
+hexad : {'badge', 'avatar', 'timer', 'score', 'progress', 'ranking'}
+motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+
+Cas particulier, est-ce qu'on choisit 'timer', 'badge' ou 'avatar' ?
+
+Si on considère qu'on veut départager le premier élément des deux vecteurs on choisit 'timer' mais 'timer' moins bien classé dans le modèle hexad
+là où 'avatar' est plus équilibré. Il est assez compliqué de départager les deux, on considère que l'un ou l'autre sont satisfaisant.
+
+## Étape 2 : stratégie et choix de l'algorithme :
+
+On décide d'implémenter un algorithme qui effectue, en quelques sortes, une moyenne des des deux vecteurs.
+
+Nous n'allons pas implémenter exactement une moyenne mais on peut considérer comme tel.
+
+Pour chaque élément d'un vecteur on lui attribue un poids, mieux l’élément est classé, plus le poids est élevé. Ainsi, dans un vecteur de 6 éléments, nous avons les poids suivants :
+
+```
+{'élément 1': 6, 'élément 2': 5, 'élément 3': 4, 'élément 4': 3, 'élément 5': 2, 'élément 6': 1}
+```
+
+On effectue ce traitement pour chaque vecteur. On stocke le résultat de ces traitements dans de nouveaux vecteurs qu'on additionne ensuite. Enfin on récupère le premier élément.
+
+Voici un exemple avec le 2ème élève (elevebf14) cité précédemment :
+
+Ses vecteurs sont :
+```
+hexad : {'progress', 'avatar', 'ranking', 'badge', 'score', 'timer'}
+motivation_initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+
+On donne une pondération aux éléments selon le classement :
+
+```
+hexad_poids : {'progress': 6, 'avatar': 5, 'ranking': 4, 'badge': 3, 'score':2, 'timer': 1}
+motivation_initiale_poids : {'timer': 6, 'avatar': 5, 'score': 4, 'ranking': 3, 'badge': 2, 'progress'; 1}
+```
+On créé un nouveau vecteur en additionnant les nouveaux vecteurs (et le poids de chaque élément) :
+
+```
+vecteur_final : {'avatar': 10, 'progress': 7, 'timer': 7, 'ranking': 4, 'score':6, 'badge': 5}
+```
+
+Le résultat obtenu correspond à ce que nous voulons : privilégier une valeur moins risquée ('avatar') mais tout de même performante (par rapport à 'progress' et 'timer' qui sont très performants dans un vecteur et très mauvais dans l'ordre, faire un choix entre les deux est risqué).
+
+Cet algorithme simple se comporte comme attendu sur les cas que nous avons cités.
+
+Pour le dernier cas très particulier, élève elevebg11 : 
+
+```
+hexad : {'badge', 'avatar', 'timer', 'score', 'progress', 'ranking'}
+motivation initiale : {'timer', 'avatar', 'score', 'ranking', 'badge', 'progress'}
+```
+
+On doit prendre une décision entre 'badge', 'timer' et 'avatar'. Le plus important pour nous est d'éliminer 'badge' étant donné que le meilleur entre 'timer' et 'avatar' est discutable.
+
+
+Avec notre algorithme, on obtient :
+
+```
+vecteur_final : {'avatar': 10, 'timer': 10, 'badge': 8, 'score':7, 'ranking': 4, 'progress': 3}
+```
+
+Ensuite on peut choisir au hasard entre 'avatar' et 'timer' ion, à un certain point il faudra trier le vecteur par ordre décroissant.
+
+On pourrait très bien avoir l'ordre suivant :
+
+```
+vecteur_final : {'timer': 10 ,'avatar': 10, 'badge': 8, 'score':7, 'ranking': 4, 'progress': 3}
+```
+
+Si on veut être rigoureux il faudrait prendre les deux premiers et choisir au hasard nous allons nous contenter de prendre le premier élément de notre vecteur car ajouter une fonction aléatoire ne va pas améliorer les performances de l’algorithme.
