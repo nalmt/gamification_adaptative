@@ -309,7 +309,7 @@ for s in students:
                                       progressScoreArray, rankingScoreArray, timerScoreArray)
     print(
         '=================================================================================================================================')
-    print("vecteur d'affinité selon Hexad pour étudiant" + s.getId() + ": \n" )
+    print("vecteur d'affinité selon Hexad pour l'élève " + s.getId() + ": \n" )
     print(vectHexad)
     print(
         '=================================================================================================================================')
@@ -319,7 +319,7 @@ for s in students:
                                       progressScoreMotiv, rankingScoreMotiv, timerScoreMotiv)
     print(
         '=================================================================================================================================')
-    print("vecteur d'affinité selon Movtivation pour étudiant" + s.getId() + ": \n")
+    print("vecteur d'affinité selon Movtivation pour l'élève " + s.getId() + ": \n")
     print(vectMotiv)
     print(
         '=================================================================================================================================')
