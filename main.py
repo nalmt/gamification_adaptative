@@ -302,27 +302,50 @@ for sid in studentsIdsList:
     s = Student(Id, StudentData, index)
     students.append(s)
 
-#vecteurs d'affinité de chaque étudiant:
+#calcul pour tout les étudiants:
 for s in students:
     # vecteur d'affinité selon hexad
     vectHexad = generateAffinityArray("Hexad", s, scoreScoreArray, avatarScoreArray, badgeScoreArray,
                                       progressScoreArray, rankingScoreArray, timerScoreArray)
-    print(
-        '=================================================================================================================================')
-    print("vecteur d'affinité selon Hexad pour l'élève " + s.getId() + ": \n" )
+    print('=================================================================================================================================')
+    print("Pour l'élève " + s.getId() + ": \n")
+    print("Le vecteur d'affinité selon Hexad est: \n" )
     print(vectHexad)
-    print(
-        '=================================================================================================================================')
-
+    print("Selon le profil Hexad, l'élèment ludique sugéré est :" + list(vectHexad.keys())[0] + "\n")
     # vecteur d'affinité selon motivation
     vectMotiv = generateAffinityArray("Motivation", s, scoreScoreMotiv, avatarScoreMotiv, badgeScoreMotiv,
                                       progressScoreMotiv, rankingScoreMotiv, timerScoreMotiv)
-    print(
-        '=================================================================================================================================')
-    print("vecteur d'affinité selon Movtivation pour l'élève " + s.getId() + ": \n")
+    print("Le vecteur d'affinité selon la movtivation est : \n")
     print(vectMotiv)
-    print(
-        '=================================================================================================================================')
+    print("Selon la motivation initiale, l'élèment ludique sugéré est :" + list(vectMotiv.keys())[0] + "\n")
+    # algo de compromis
+    vectHexadWeights = {}
+    vectMotivPWeights = {}
+    n = 6
+    for ge in vectHexad.keys():
+        vectHexadWeights[ge] = n
+        n = n - 1
+    print(vectHexadWeights)
+
+    n = 6
+    for ge in vectMotiv.keys():
+        vectMotivPWeights[ge] = n
+        n = n - 1
+    print(vectMotivPWeights)
+
+    finalVect = {}
+    bestGE = ""
+
+    for key in vectHexadWeights:
+        finalVect[key] = vectHexadWeights[key] + vectMotivPWeights[key]
+    finalVect = dict(sorted(finalVect.items(), key=operator.itemgetter(1), reverse=True))
+
+    bestGE = list(finalVect.keys())[0]
+    print("Le vecteur pondéré généré par notre algorithme selon hexad et motivation est : \n")
+    print(finalVect)
+    print("Notre algorithme propose l'élèment ludique :" + bestGE)
+    print('=================================================================================================================================')
+
 
 """
 #vecteur d'affinité selon hexad

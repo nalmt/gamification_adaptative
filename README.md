@@ -51,13 +51,26 @@ Rappelons les définition suivantes :
 Ces deux types de motivation sont complétés par un troisième état, l’amotivation :
 - Amotivation : l’individu a le sentiment d’être soumis à des facteurs hors de tout contrôle. L’amotivation se distingue de la motivation extrinsèque par l’absence de motivation lié au sentiment de ne plus être capable de prévoir les conséquences de ses actions.
 
-Donc pour calculer le score de motivation il faut additionner les valeurs de motivations intrinsèques et extrinsèque puis en soustraire la valeur de l’amotivation.
+Donc pour calculer le score de motivation il faut additionner les valeurs de motivations intrinsèques et extrinsèque puis en soustraire la valeur de l’amotivation. 
+Nous avons implémenté la méthode `gameElementScoreArray()` que nous utilisons pour trouver le vecteur de score de motivation contenant le socre pour chaque élément. Ce vecteur sera utilisé par la suite pour générer le vecteur d’affinité avec la méthode `generateAffinityArray()`. Les méthodes se comportent de manières différentes selon le type de profil en question : 
 
-### Vecteur d'affinité pour profil Hexad 
+### Vecteur de score et vecteur d'affinité pour profil Hexad 
 
+Le vecteur du score du profil hexad pour un Game Element spécifique, contient des valeurs de score pour chaque catégorie du profil hexad. 
+Pour trouver ces valeurs, on additionne les motivations intrinsèque et extrinsèque correspondantes à cette catégorie récupéré du tableau pathcoefs validé (avec la méthode `pathCoefsValidation()`) de cet élément ludique et on en soustrait l’amotivation correspondante dans ce dernier. 
+Par exemple: le score de la catégorie Achiever pour l'élément jeu “avatar” se calcule comme suit :
 
+`score = pathCoefs\["achiever"]\[0] + pathCoefs\["achiever"]\[1] - pathCoefs\["achiever"]\[2]`
 
-### Vecteur d'affinité pour profil motivation 
+avec:
+- pathCoefs\["achiever"][0] correspond à la valeur de la motivation intrinsèque dans tableau avatarpathcoef pour “achiever”
+- pathCoefs\["achiever"][1] correspond à la valeur de la motivation extrinsèque dans tableau avatarpathcoef pour “achiever”
+- pathCoefs\["achiever"][2] correspond à la valeur de l’amotivation dans tableau avatarpathcoef pour “achiever”
+
+Une fois ce vecteur est calculé, il est utilisé pour generer le vecteur d'affinité 
+### Vecteur de score et vecteur d'affinité pour profil motivation 
+
+here
 
 ## Deuxième partie
 
